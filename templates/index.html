@@ -10,31 +10,34 @@
 
 <body>
     <div class="container">
-        <header>
-            <h1>Arbitrage Bot</h1>
-            <p class="subtitle">Paper trading on Polymarket</p>
-        </header>
+        <div class="header">
+            <div class="header-left">
+                <h1>Arbitrage Bot</h1>
+                <p class="subtitle">Paper trading on Polymarket</p>
+            </div>
+            <button class="theme-toggle" id="theme-toggle">Dark mode</button>
+        </div>
 
-        <div class="stats-row">
+        <div class="stats">
             <div class="stat">
                 <span class="stat-value" id="balance">$10,000</span>
                 <span class="stat-label">Balance</span>
             </div>
             <div class="stat positive">
-                <span class="stat-value" id="profit">$0.00</span>
+                <span class="stat-value" id="profit">$0</span>
                 <span class="stat-label">Profit</span>
             </div>
             <div class="stat">
                 <span class="stat-value" id="positions">0</span>
                 <span class="stat-label">Positions</span>
             </div>
-            <div class="stat highlight">
+            <div class="stat accent">
                 <span class="stat-value" id="opportunities">0</span>
-                <span class="stat-label">Opportunities</span>
+                <span class="stat-label">Found</span>
             </div>
         </div>
 
-        <div class="status-bar">
+        <div class="status">
             <div class="status-left">
                 <span class="status-dot" id="scanner-dot"></span>
                 <span id="scanner-text">Connecting</span>
@@ -45,8 +48,8 @@
         </div>
 
         <div class="section">
-            <div class="section-title">Opportunities</div>
-            <div class="table-wrap">
+            <div class="section-header">Opportunities</div>
+            <div class="card">
                 <table>
                     <thead>
                         <tr>
@@ -59,7 +62,7 @@
                     </thead>
                     <tbody id="opportunities-body">
                         <tr>
-                            <td colspan="5" class="empty">Waiting for data...</td>
+                            <td colspan="5" class="empty">Waiting for data</td>
                         </tr>
                     </tbody>
                 </table>
@@ -67,8 +70,8 @@
         </div>
 
         <div class="section">
-            <div class="section-title">Positions</div>
-            <div class="table-wrap">
+            <div class="section-header">Positions</div>
+            <div class="card">
                 <table>
                     <thead>
                         <tr>
@@ -88,8 +91,8 @@
         </div>
 
         <div class="section">
-            <div class="section-title">Trades</div>
-            <div class="table-wrap">
+            <div class="section-header">Recent Trades</div>
+            <div class="card">
                 <table>
                     <thead>
                         <tr>
@@ -113,12 +116,35 @@
             <button id="reset-btn" class="btn danger">Reset</button>
         </div>
 
-        <footer>
-            Paper trading only
-        </footer>
+        <footer>Paper trading only</footer>
     </div>
 
     <script src="/static/app.js"></script>
+    <script>
+        // Theme toggle
+        const toggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+
+        // Check saved preference
+        const saved = localStorage.getItem('theme');
+        if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.setAttribute('data-theme', 'dark');
+            toggle.textContent = 'Light mode';
+        }
+
+        toggle.addEventListener('click', () => {
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                html.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                toggle.textContent = 'Dark mode';
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                toggle.textContent = 'Light mode';
+            }
+        });
+    </script>
 </body>
 
 </html>
