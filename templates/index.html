@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polymarket Arbitrage Bot</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Polymarket Arbitrage Bot</h1>
+            <p class="subtitle">Paper Trading Dashboard</p>
+        </header>
+
+        <!-- Stats Overview -->
+        <section class="stats-grid">
+            <div class="stat-card primary">
+                <div class="stat-value" id="balance">$0.00</div>
+                <div class="stat-label">Balance</div>
+            </div>
+            <div class="stat-card success">
+                <div class="stat-value" id="profit">$0.00</div>
+                <div class="stat-label">Total Profit</div>
+            </div>
+            <div class="stat-card info">
+                <div class="stat-value" id="positions">0</div>
+                <div class="stat-label">Open Positions</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-value" id="opportunities">0</div>
+                <div class="stat-label">Opportunities Found</div>
+            </div>
+        </section>
+
+        <!-- Scanner Status -->
+        <section class="scanner-status">
+            <div class="status-indicator">
+                <span class="dot" id="scanner-dot"></span>
+                <span id="scanner-text">Initializing...</span>
+            </div>
+            <div class="scan-info">
+                <span id="scan-count">0</span> scans | Last: <span id="last-scan">-</span>
+            </div>
+        </section>
+
+        <!-- Recent Opportunities -->
+        <section class="panel">
+            <h2>📊 Recent Opportunities</h2>
+            <div class="table-container">
+                <table id="opportunities-table">
+                    <thead>
+                        <tr>
+                            <th>Market</th>
+                            <th>YES</th>
+                            <th>NO</th>
+                            <th>Total</th>
+                            <th>Profit</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="opportunities-body">
+                        <tr><td colspan="6" class="empty">No opportunities yet...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Open Positions -->
+        <section class="panel">
+            <h2>📈 Open Positions</h2>
+            <div class="table-container">
+                <table id="positions-table">
+                    <thead>
+                        <tr>
+                            <th>Market</th>
+                            <th>Shares</th>
+                            <th>Cost</th>
+                            <th>Expected Profit</th>
+                            <th>Opened</th>
+                        </tr>
+                    </thead>
+                    <tbody id="positions-body">
+                        <tr><td colspan="5" class="empty">No open positions...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Recent Trades -->
+        <section class="panel">
+            <h2>💹 Recent Trades</h2>
+            <div class="table-container">
+                <table id="trades-table">
+                    <thead>
+                        <tr>
+                            <th>Market</th>
+                            <th>Side</th>
+                            <th>Outcome</th>
+                            <th>Shares</th>
+                            <th>Price</th>
+                            <th>Cost</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="trades-body">
+                        <tr><td colspan="7" class="empty">No trades yet...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Controls -->
+        <section class="controls">
+            <button id="reset-btn" class="btn danger">🔄 Reset Paper Trader</button>
+        </section>
+
+        <footer>
+            <p>⚠️ Paper Trading Only - No Real Money</p>
+        </footer>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
