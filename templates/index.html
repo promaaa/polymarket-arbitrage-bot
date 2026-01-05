@@ -15,44 +15,39 @@
             <p class="subtitle">Paper trading on Polymarket</p>
         </header>
 
-        <!-- Stats -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-value" id="balance">$10,000</div>
-                <div class="stat-label">Balance</div>
+        <div class="stats-row">
+            <div class="stat">
+                <span class="stat-value" id="balance">$10,000</span>
+                <span class="stat-label">Balance</span>
             </div>
-            <div class="stat-card success">
-                <div class="stat-value" id="profit">$0.00</div>
-                <div class="stat-label">Profit</div>
+            <div class="stat positive">
+                <span class="stat-value" id="profit">$0.00</span>
+                <span class="stat-label">Profit</span>
             </div>
-            <div class="stat-card">
-                <div class="stat-value" id="positions">0</div>
-                <div class="stat-label">Positions</div>
+            <div class="stat">
+                <span class="stat-value" id="positions">0</span>
+                <span class="stat-label">Positions</span>
             </div>
-            <div class="stat-card warning">
-                <div class="stat-value" id="opportunities">0</div>
-                <div class="stat-label">Found</div>
-            </div>
-        </div>
-
-        <!-- Scanner Status -->
-        <div class="scanner-status">
-            <div class="status-indicator">
-                <span class="dot" id="scanner-dot"></span>
-                <span id="scanner-text">Connecting...</span>
-            </div>
-            <div class="scan-info">
-                <span id="scan-count">0</span> scans · Last: <span id="last-scan">—</span>
+            <div class="stat highlight">
+                <span class="stat-value" id="opportunities">0</span>
+                <span class="stat-label">Opportunities</span>
             </div>
         </div>
 
-        <!-- Opportunities -->
+        <div class="status-bar">
+            <div class="status-left">
+                <span class="status-dot" id="scanner-dot"></span>
+                <span id="scanner-text">Connecting</span>
+            </div>
+            <div class="status-right">
+                <span id="scan-count">0</span> scans · <span id="last-scan">—</span>
+            </div>
+        </div>
+
         <div class="section">
-            <div class="section-header">
-                <span class="section-title">Recent Opportunities</span>
-            </div>
-            <div class="table-container">
-                <table id="opportunities-table">
+            <div class="section-title">Opportunities</div>
+            <div class="table-wrap">
+                <table>
                     <thead>
                         <tr>
                             <th>Market</th>
@@ -60,50 +55,42 @@
                             <th>No</th>
                             <th>Total</th>
                             <th>Profit</th>
-                            <th>Time</th>
                         </tr>
                     </thead>
                     <tbody id="opportunities-body">
                         <tr>
-                            <td colspan="6" class="empty">Waiting for opportunities...</td>
+                            <td colspan="5" class="empty">Waiting for data...</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Positions -->
         <div class="section">
-            <div class="section-header">
-                <span class="section-title">Open Positions</span>
-            </div>
-            <div class="table-container">
-                <table id="positions-table">
+            <div class="section-title">Positions</div>
+            <div class="table-wrap">
+                <table>
                     <thead>
                         <tr>
                             <th>Market</th>
                             <th>Shares</th>
                             <th>Cost</th>
                             <th>Expected</th>
-                            <th>Opened</th>
                         </tr>
                     </thead>
                     <tbody id="positions-body">
                         <tr>
-                            <td colspan="5" class="empty">No positions yet</td>
+                            <td colspan="4" class="empty">No positions</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Trades -->
         <div class="section">
-            <div class="section-header">
-                <span class="section-title">Recent Trades</span>
-            </div>
-            <div class="table-container">
-                <table id="trades-table">
+            <div class="section-title">Trades</div>
+            <div class="table-wrap">
+                <table>
                     <thead>
                         <tr>
                             <th>Market</th>
@@ -111,25 +98,23 @@
                             <th>Outcome</th>
                             <th>Shares</th>
                             <th>Price</th>
-                            <th>Cost</th>
                         </tr>
                     </thead>
                     <tbody id="trades-body">
                         <tr>
-                            <td colspan="6" class="empty">No trades yet</td>
+                            <td colspan="5" class="empty">No trades</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Controls -->
-        <div class="controls">
+        <div class="actions">
             <button id="reset-btn" class="btn danger">Reset</button>
         </div>
 
         <footer>
-            <p>Paper trading only — no real money</p>
+            Paper trading only
         </footer>
     </div>
 

@@ -1,18 +1,22 @@
-/* Polymarket Arbitrage Bot - Minimal Dashboard */
+/* Polymarket Arbitrage Bot - Obsidian/Anthropic Inspired */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-    --bg: #fafafa;
-    --bg-card: #ffffff;
-    --text: #1a1a1a;
-    --text-secondary: #666666;
-    --text-muted: #999999;
-    --border: #e5e5e5;
-    --accent: #0d0d0d;
-    --green: #16a34a;
-    --red: #dc2626;
-    --orange: #ea580c;
+    --bg: #1e1e1e;
+    --bg-secondary: #252525;
+    --bg-hover: #2a2a2a;
+    --bg-active: #333333;
+    --text: #dcddde;
+    --text-muted: #888888;
+    --text-faint: #666666;
+    --border: #333333;
+    --accent: #7c3aed;
+    --accent-muted: rgba(124, 58, 237, 0.15);
+    --green: #4ade80;
+    --green-muted: rgba(74, 222, 128, 0.15);
+    --red: #f87171;
+    --orange: #fb923c;
 }
 
 * {
@@ -25,136 +29,130 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     background: var(--bg);
     color: var(--text);
-    line-height: 1.5;
-    font-size: 14px;
+    line-height: 1.6;
+    font-size: 13px;
     -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
 }
 
 .container {
-    max-width: 1000px;
+    max-width: 900px;
     margin: 0 auto;
-    padding: 48px 24px;
+    padding: 40px 32px;
 }
 
 /* Header */
 header {
-    margin-bottom: 48px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
 }
 
 header h1 {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 600;
-    letter-spacing: -0.3px;
     color: var(--text);
+    letter-spacing: -0.2px;
 }
 
 header .subtitle {
-    color: var(--text-muted);
-    font-size: 14px;
+    color: var(--text-faint);
+    font-size: 13px;
     margin-top: 4px;
-    font-weight: 400;
 }
 
-/* Stats */
-.stats-grid {
+/* Stats Row */
+.stats-row {
     display: flex;
-    gap: 48px;
-    margin-bottom: 48px;
-    padding-bottom: 24px;
+    gap: 32px;
+    margin-bottom: 32px;
+    padding: 20px 0;
     border-bottom: 1px solid var(--border);
 }
 
-.stat-card {
-    flex: 1;
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
 .stat-value {
-    font-size: 28px;
-    font-weight: 600;
-    letter-spacing: -0.5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 500;
     color: var(--text);
-    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.5px;
 }
 
 .stat-label {
-    color: var(--text-muted);
-    font-size: 12px;
-    margin-top: 2px;
+    font-size: 11px;
+    color: var(--text-faint);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
-.stat-card.success .stat-value {
+.stat.positive .stat-value {
     color: var(--green);
 }
 
-.stat-card.warning .stat-value {
-    color: var(--orange);
+.stat.highlight .stat-value {
+    color: var(--accent);
 }
 
-/* Scanner Status */
-.scanner-status {
+/* Status Bar */
+.status-bar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 32px;
-    padding: 12px 16px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--bg-secondary);
     border-radius: 6px;
+    margin-bottom: 28px;
+    font-size: 12px;
 }
 
-.status-indicator {
+.status-left {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 13px;
-}
-
-.dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--text-muted);
-}
-
-.dot.active {
-    background: var(--green);
-}
-
-.scan-info {
     color: var(--text-muted);
-    font-size: 13px;
-    font-variant-numeric: tabular-nums;
 }
 
-/* Section */
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-faint);
+}
+
+.status-dot.active {
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+}
+
+.status-right {
+    color: var(--text-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+}
+
+/* Sections */
 .section {
-    margin-bottom: 32px;
-}
-
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 24px;
 }
 
 .section-title {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 500;
-    color: var(--text-secondary);
+    color: var(--text-faint);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+    padding-left: 2px;
 }
 
-/* Tables */
-.table-container {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
+/* Table */
+.table-wrap {
+    background: var(--bg-secondary);
+    border-radius: 8px;
     overflow: hidden;
 }
 
@@ -164,126 +162,126 @@ table {
 }
 
 th {
-    padding: 10px 16px;
+    padding: 10px 14px;
     text-align: left;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 500;
-    color: var(--text-muted);
+    color: var(--text-faint);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg);
+    background: var(--bg-active);
 }
 
 td {
-    padding: 12px 16px;
-    font-size: 13px;
-    font-variant-numeric: tabular-nums;
-    border-bottom: 1px solid var(--border);
+    padding: 11px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
 }
 
-tr:last-child td {
-    border-bottom: none;
+tr:first-child td {
+    border-top: none;
 }
 
-tr:hover {
-    background: #f5f5f5;
+tr:hover td {
+    background: var(--bg-hover);
 }
 
 td.empty {
     text-align: center;
-    color: var(--text-muted);
-    padding: 32px;
+    color: var(--text-faint);
+    padding: 28px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
 }
 
-.market-name {
+.cell-market {
     color: var(--text);
-    max-width: 300px;
+    max-width: 280px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
 }
 
-.price-yes {
+.cell-yes {
     color: var(--green);
 }
 
-.price-no {
+.cell-no {
     color: var(--red);
 }
 
-.profit {
+.cell-profit {
     color: var(--green);
     font-weight: 500;
 }
 
-/* Controls */
-.controls {
+/* Footer Actions */
+.actions {
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 32px;
+    margin-top: 24px;
 }
 
 .btn {
-    padding: 8px 16px;
-    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
     font-weight: 500;
+    padding: 8px 14px;
     border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: inherit;
-}
-
-.btn.secondary {
-    background: var(--bg-card);
-    color: var(--text);
     border: 1px solid var(--border);
+    background: var(--bg-secondary);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
 }
 
-.btn.secondary:hover {
-    background: #f5f5f5;
-    border-color: #ccc;
+.btn:hover {
+    background: var(--bg-hover);
+    color: var(--text);
+    border-color: var(--text-faint);
 }
 
 .btn.danger {
-    background: var(--bg-card);
     color: var(--red);
-    border: 1px solid var(--border);
 }
 
 .btn.danger:hover {
-    background: #fef2f2;
+    background: rgba(248, 113, 113, 0.1);
     border-color: var(--red);
 }
 
 /* Footer */
 footer {
-    margin-top: 48px;
-    padding-top: 24px;
+    margin-top: 40px;
+    padding-top: 20px;
     border-top: 1px solid var(--border);
     text-align: center;
-    color: var(--text-muted);
-    font-size: 12px;
+    font-size: 11px;
+    color: var(--text-faint);
 }
 
 /* Responsive */
-@media (max-width: 640px) {
+@media (max-width: 600px) {
     .container {
         padding: 24px 16px;
     }
 
-    .stats-grid {
+    .stats-row {
         flex-wrap: wrap;
-        gap: 24px;
+        gap: 20px;
     }
 
-    .stat-card {
-        flex: 1 1 45%;
+    .stat {
+        min-width: 80px;
     }
 
-    .scanner-status {
+    .status-bar {
         flex-direction: column;
         align-items: flex-start;
-        gap: 8px;
+        gap: 6px;
     }
 }
