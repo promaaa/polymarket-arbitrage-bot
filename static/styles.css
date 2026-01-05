@@ -196,8 +196,8 @@ th {
     padding: 14px 18px;
     text-align: left;
     font-size: 12px;
-    font-weight: 500;
-    color: var(--text-tertiary);
+    font-weight: 600;
+    color: var(--text-secondary);
     background: var(--bg-tertiary);
     border-bottom: 1px solid var(--border);
 }
