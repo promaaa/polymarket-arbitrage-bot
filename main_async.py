@@ -249,6 +249,7 @@ async def main_async():
         description="Polymarket Arbitrage Bot - High Performance Async Version"
     )
     parser.add_argument("--simulate", "-s", action="store_true", help="Use simulated data")
+    parser.add_argument("--dashboard", "-d", action="store_true", help="Start web dashboard")
     parser.add_argument("--no-trade", action="store_true", help="Detect only, don't trade")
     parser.add_argument("--no-websocket", action="store_true", help="Disable WebSocket, use polling only")
     parser.add_argument("--once", action="store_true", help="Single scan and exit")
@@ -270,6 +271,7 @@ async def main_async():
     print(f"Mode: {'SIMULATION' if args.simulate else 'LIVE'}")
     print(f"Auto-trade: {not args.no_trade}")
     print(f"WebSocket: {not args.no_websocket}")
+    print(f"Dashboard: {args.dashboard}")
     print(f"Initial balance: ${Config.INITIAL_BALANCE:,.2f}")
     print(f"Trade size: ${Config.TRADE_SIZE:,.2f}")
     print("=" * 60 + "\n")
@@ -318,6 +320,13 @@ async def main_async():
         else:
             # Continuous mode
             print("Press Ctrl+C to stop\n")
+            
+            # Start dashboard if requested
+            if args.dashboard:
+                from async_dashboard import AsyncDashboard
+                dashboard = AsyncDashboard(bot)
+                dashboard.run_in_thread()
+                print(f"📊 Dashboard: http://localhost:{Config.DASHBOARD_PORT}\n")
             
             if bot.use_websocket:
                 await bot.run_hybrid()
