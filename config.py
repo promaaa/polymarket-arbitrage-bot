@@ -17,8 +17,10 @@ class Config:
     # Scanning settings
     SCAN_INTERVAL = int(os.getenv("SCAN_INTERVAL", "5"))
     
-    # Trading settings
+    # Trading parameters
     MIN_PROFIT_THRESHOLD = float(os.getenv("MIN_PROFIT_THRESHOLD", "0.01"))
+    MIN_VOLUME = float(os.getenv("MIN_VOLUME", "10000"))  # Minimum market volume
+    MIN_LIQUIDITY = float(os.getenv("MIN_LIQUIDITY", "1000"))  # Minimum liquidity
     INITIAL_BALANCE = float(os.getenv("INITIAL_BALANCE", "10000"))
     
     # Trade sizing - amount to invest per arbitrage opportunity

@@ -14,20 +14,29 @@ logger = logging.getLogger(__name__)
 class ArbitrageDetector:
     """Detects arbitrage opportunities in binary markets."""
     
-    def __init__(self, min_profit_threshold: float = None):
+    def __init__(
+        self, 
+        min_profit_threshold: float = None,
+        min_volume: float = 10000,  # Minimum $10k volume
+        min_liquidity: float = 1000,  # Minimum $1k liquidity
+    ):
         """
         Initialize the detector.
         
         Args:
             min_profit_threshold: Minimum profit per share to consider.
-                                  Defaults to config value.
+            min_volume: Minimum market volume to consider (filters low-volume markets).
+            min_liquidity: Minimum market liquidity to consider.
         """
         self.min_profit_threshold = (
             min_profit_threshold 
             if min_profit_threshold is not None 
             else Config.MIN_PROFIT_THRESHOLD
         )
+        self.min_volume = min_volume
+        self.min_liquidity = min_liquidity
         self.opportunities_found = 0
+        self.filtered_low_volume = 0
     
     def detect(self, market: Market) -> Optional[ArbitrageOpportunity]:
         """
@@ -81,28 +90,66 @@ class ArbitrageDetector:
         
         return None
     
+    def calculate_score(self, opp: ArbitrageOpportunity) -> float:
+        """
+        Calculate a composite score for ranking opportunities.
+        
+        Score = profit_percentage * volume_factor * liquidity_factor
+        
+        This prioritizes:
+        1. Higher profit percentage
+        2. Higher volume (more reliable prices)
+        3. Higher liquidity (easier execution)
+        """
+        market = opp.market
+        
+        # Normalize volume (log scale to avoid extreme outliers)
+        import math
+        volume_factor = math.log10(max(market.volume, 1) + 1) / 6  # Normalize to ~0-1
+        
+        # Normalize liquidity
+        liquidity_factor = math.log10(max(market.liquidity, 1) + 1) / 5
+        
+        # Composite score: profit is primary, volume/liquidity are multipliers
+        score = opp.profit_percentage * (0.4 + 0.3 * volume_factor + 0.3 * liquidity_factor)
+        
+        return score
+    
     def scan_markets(self, markets: List[Market]) -> List[ArbitrageOpportunity]:
         """
         Scan multiple markets for arbitrage opportunities.
+        
+        Filters by minimum volume/liquidity and sorts by composite score.
         
         Args:
             markets: List of markets with current prices
             
         Returns:
-            List of detected opportunities, sorted by profit
+            List of detected opportunities, sorted by score (best first)
         """
         opportunities = []
         
         for market in markets:
             opp = self.detect(market)
             if opp:
+                # Filter low-volume markets
+                if market.volume < self.min_volume:
+                    self.filtered_low_volume += 1
+                    logger.debug(f"Filtered low volume: {market.question[:40]}... (${market.volume:,.0f})")
+                    continue
+                
+                if market.liquidity < self.min_liquidity:
+                    self.filtered_low_volume += 1
+                    logger.debug(f"Filtered low liquidity: {market.question[:40]}... (${market.liquidity:,.0f})")
+                    continue
+                
                 opportunities.append(opp)
         
-        # Sort by profit percentage (highest first)
-        opportunities.sort(key=lambda x: x.profit_percentage, reverse=True)
+        # Sort by composite score (highest first)
+        opportunities.sort(key=lambda x: self.calculate_score(x), reverse=True)
         
         if opportunities:
-            logger.info(f"Found {len(opportunities)} arbitrage opportunities")
+            logger.info(f"Found {len(opportunities)} arbitrage opportunities (filtered {self.filtered_low_volume} low-volume)")
         
         return opportunities
     
@@ -111,4 +158,7 @@ class ArbitrageDetector:
         return {
             "opportunities_found": self.opportunities_found,
             "min_profit_threshold": self.min_profit_threshold,
+            "min_volume": self.min_volume,
+            "min_liquidity": self.min_liquidity,
+            "filtered_low_volume": self.filtered_low_volume,
         }
