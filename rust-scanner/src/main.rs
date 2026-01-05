@@ -9,6 +9,8 @@ use tokio::sync::RwLock;
 const GAMMA_API: &str = "https://gamma-api.polymarket.com/markets";
 const MIN_PROFIT_THRESHOLD: f64 = 0.01;
 const MIN_VOLUME: f64 = 10000.0;
+const PAGE_SIZE: usize = 100;
+const MAX_PAGES: usize = 10;  // Fetch up to 1000 markets
 
 // Helper to deserialize string or number as f64
 fn de_string_or_number<'de, D>(deserializer: D) -> Result<Option<f64>, D::Error>
@@ -49,7 +51,6 @@ struct Opportunity {
     combined_cost: f64,
     profit: f64,
     profit_pct: f64,
-    timestamp_ms: u128,
 }
 
 #[derive(Debug, Deserialize)]
@@ -66,58 +67,83 @@ struct GammaMarket {
 
 type MarketCache = Arc<RwLock<HashMap<String, Market>>>;
 
-async fn fetch_markets(client: &Client) -> Result<Vec<Market>, Box<dyn std::error::Error + Send + Sync>> {
-    let start = Instant::now();
+fn parse_market(m: GammaMarket) -> Option<Market> {
+    let id = m.id?;
+    let question = m.question.unwrap_or_default();
+    let volume = m.volume_num.unwrap_or(0.0);
+    let liquidity = m.liquidity.unwrap_or(0.0);
     
+    let prices: Vec<f64> = m.outcome_prices
+        .and_then(|p| {
+            let parsed: Result<Vec<String>, _> = serde_json::from_str(&p);
+            if let Ok(v) = parsed {
+                return Some(v.iter().filter_map(|s| s.parse().ok()).collect());
+            }
+            let parsed: Result<Vec<f64>, _> = serde_json::from_str(&p);
+            parsed.ok()
+        })
+        .unwrap_or_default();
+    
+    if prices.len() >= 2 {
+        Some(Market {
+            id,
+            question,
+            volume,
+            liquidity,
+            yes_price: prices[0],
+            no_price: prices[1],
+        })
+    } else {
+        None
+    }
+}
+
+async fn fetch_page(client: &Client, offset: usize) -> Result<Vec<Market>, Box<dyn std::error::Error + Send + Sync>> {
     let resp = client
         .get(GAMMA_API)
-        .query(&[("active", "true"), ("closed", "false"), ("limit", "200")])
+        .query(&[
+            ("active", "true"),
+            ("closed", "false"),
+            ("limit", &PAGE_SIZE.to_string()),
+            ("offset", &offset.to_string()),
+        ])
         .send()
         .await?;
     
     let text = resp.text().await?;
     let markets: Vec<GammaMarket> = serde_json::from_str(&text)?;
-    let elapsed = start.elapsed();
     
-    let parsed: Vec<Market> = markets
-        .into_iter()
-        .filter_map(|m| {
-            let id = m.id?;
-            let question = m.question.unwrap_or_default();
-            let volume = m.volume_num.unwrap_or(0.0);
-            let liquidity = m.liquidity.unwrap_or(0.0);
-            
-            // Parse outcome prices - it's a JSON array of strings like ["0.0045", "0.9955"]
-            let prices: Vec<f64> = m.outcome_prices
-                .and_then(|p| {
-                    // First try parsing as array of strings
-                    let parsed: Result<Vec<String>, _> = serde_json::from_str(&p);
-                    if let Ok(v) = parsed {
-                        return Some(v.iter().filter_map(|s| s.parse().ok()).collect());
-                    }
-                    // Fallback: try parsing as array of numbers
-                    let parsed: Result<Vec<f64>, _> = serde_json::from_str(&p);
-                    parsed.ok()
-                })
-                .unwrap_or_default();
-            
-            if prices.len() >= 2 {
-                Some(Market {
-                    id,
-                    question,
-                    volume,
-                    liquidity,
-                    yes_price: prices[0],
-                    no_price: prices[1],
-                })
-            } else {
-                None
+    Ok(markets.into_iter().filter_map(parse_market).collect())
+}
+
+async fn fetch_all_markets(client: &Client) -> Result<Vec<Market>, Box<dyn std::error::Error + Send + Sync>> {
+    let start = Instant::now();
+    let mut all_markets = Vec::new();
+    
+    // Fetch pages concurrently
+    let mut handles = Vec::new();
+    for page in 0..MAX_PAGES {
+        let client = client.clone();
+        let offset = page * PAGE_SIZE;
+        handles.push(tokio::spawn(async move {
+            fetch_page(&client, offset).await
+        }));
+    }
+    
+    for handle in handles {
+        match handle.await {
+            Ok(Ok(markets)) => {
+                all_markets.extend(markets);
             }
-        })
-        .collect();
+            Ok(Err(e)) => eprintln!("Page error: {}", e),
+            Err(e) => eprintln!("Task error: {}", e),
+        }
+    }
     
-    println!("⚡ Fetched {} markets in {:?}", parsed.len(), elapsed);
-    Ok(parsed)
+    let elapsed = start.elapsed();
+    println!("⚡ Fetched {} markets ({} pages) in {:?}", all_markets.len(), MAX_PAGES, elapsed);
+    
+    Ok(all_markets)
 }
 
 fn detect_opportunities(markets: &[Market]) -> Vec<Opportunity> {
@@ -140,10 +166,6 @@ fn detect_opportunities(markets: &[Market]) -> Vec<Opportunity> {
                     combined_cost: combined,
                     profit,
                     profit_pct,
-                    timestamp_ms: std::time::SystemTime::now()
-                        .duration_since(std::time::UNIX_EPOCH)
-                        .unwrap()
-                        .as_millis(),
                 })
             } else {
                 None
@@ -151,7 +173,6 @@ fn detect_opportunities(markets: &[Market]) -> Vec<Opportunity> {
         })
         .collect();
     
-    // Sort by profit percentage descending
     opportunities.sort_by(|a, b| b.profit_pct.partial_cmp(&a.profit_pct).unwrap());
     
     let elapsed = start.elapsed();
@@ -162,40 +183,26 @@ fn detect_opportunities(markets: &[Market]) -> Vec<Opportunity> {
 
 async fn scan_loop(client: Client, _cache: MarketCache) {
     let mut scan_count = 0u64;
-    let mut total_fetch_time = Duration::ZERO;
-    let mut total_detect_time = Duration::ZERO;
     
     loop {
-        let fetch_start = Instant::now();
+        let scan_start = Instant::now();
         
-        match fetch_markets(&client).await {
+        match fetch_all_markets(&client).await {
             Ok(markets) => {
-                let fetch_time = fetch_start.elapsed();
-                total_fetch_time += fetch_time;
-                
-                let detect_start = Instant::now();
                 let opportunities = detect_opportunities(&markets);
-                let detect_time = detect_start.elapsed();
-                total_detect_time += detect_time;
-                
                 scan_count += 1;
                 
-                // Print stats every scan
-                println!("\n📊 Scan #{} | Fetch: {:?} | Detect: {:?} | Avg: {:?}",
-                    scan_count,
-                    fetch_time,
-                    detect_time,
-                    total_fetch_time / scan_count as u32
-                );
+                let total_time = scan_start.elapsed();
+                println!("\n📊 Scan #{} | Total: {:?}", scan_count, total_time);
                 
                 if !opportunities.is_empty() {
-                    println!("\n🎯 Top {} Opportunities:", opportunities.len().min(5));
+                    println!("\n🎯 Top {} Opportunities:", opportunities.len().min(10));
                     println!("{:<50} {:>8} {:>8} {:>8} {:>8}",
                         "Market", "YES", "NO", "Total", "Profit"
                     );
                     println!("{}", "-".repeat(86));
                     
-                    for opp in opportunities.iter().take(5) {
+                    for opp in opportunities.iter().take(10) {
                         let q = if opp.question.len() > 47 {
                             format!("{}...", &opp.question[..47])
                         } else {
@@ -209,6 +216,8 @@ async fn scan_loop(client: Client, _cache: MarketCache) {
                             opp.profit_pct
                         );
                     }
+                } else {
+                    println!("No opportunities found");
                 }
             }
             Err(e) => {
@@ -216,7 +225,8 @@ async fn scan_loop(client: Client, _cache: MarketCache) {
             }
         }
         
-        tokio::time::sleep(Duration::from_secs(2)).await;
+        println!("\n");
+        tokio::time::sleep(Duration::from_secs(3)).await;
     }
 }
 
@@ -226,17 +236,18 @@ async fn main() {
     println!("================================================");
     println!("Min profit: {}%", MIN_PROFIT_THRESHOLD * 100.0);
     println!("Min volume: ${:.0}", MIN_VOLUME);
+    println!("Pages: {} x {} = {} markets max", MAX_PAGES, PAGE_SIZE, MAX_PAGES * PAGE_SIZE);
     println!();
     
     let client = Client::builder()
         .timeout(Duration::from_secs(10))
-        .pool_max_idle_per_host(10)
+        .pool_max_idle_per_host(20)
         .build()
         .expect("Failed to create HTTP client");
     
     let cache: MarketCache = Arc::new(RwLock::new(HashMap::new()));
     
-    println!("Starting scanner (polling every 2s)...\n");
+    println!("Starting scanner...\n");
     
     scan_loop(client, cache).await;
 }
