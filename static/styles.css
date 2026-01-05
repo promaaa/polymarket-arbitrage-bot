@@ -1,32 +1,30 @@
 /* Arbitrage Bot - Claude Style */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Code+Pro:wght@400;500&display=swap');
-
 :root {
-    /* Light mode (default) */
+    /* Light mode */
     --bg-primary: #ffffff;
-    --bg-secondary: #f9f9f9;
-    --bg-tertiary: #f3f3f3;
+    --bg-secondary: #fafafa;
+    --bg-tertiary: #f4f4f4;
     --text-primary: #0d0d0d;
-    --text-secondary: #5c5c5c;
-    --text-tertiary: #9a9a9a;
-    --border: #e8e8e8;
-    --accent: #d97706;
-    --green: #059669;
-    --red: #dc2626;
+    --text-secondary: #666666;
+    --text-tertiary: #999999;
+    --border: #ebebeb;
+    --accent: #da7756;
+    --green: #2e7d32;
+    --red: #c62828;
 }
 
 [data-theme="dark"] {
-    --bg-primary: #2f2f2f;
-    --bg-secondary: #262626;
-    --bg-tertiary: #1f1f1f;
-    --text-primary: #ececec;
-    --text-secondary: #a8a8a8;
-    --text-tertiary: #6b6b6b;
-    --border: #404040;
-    --accent: #d97706;
-    --green: #10b981;
-    --red: #f87171;
+    --bg-primary: #343541;
+    --bg-secondary: #2a2b32;
+    --bg-tertiary: #202123;
+    --text-primary: #ececf1;
+    --text-secondary: #c5c5d2;
+    --text-tertiary: #8e8ea0;
+    --border: #4e4f60;
+    --accent: #da7756;
+    --green: #5cb270;
+    --red: #ef5350;
 }
 
 * {
@@ -36,19 +34,19 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
     background: var(--bg-secondary);
     color: var(--text-primary);
     line-height: 1.5;
-    font-size: 14px;
+    font-size: 15px;
     -webkit-font-smoothing: antialiased;
-    transition: background 0.2s, color 0.2s;
+    letter-spacing: -0.01em;
 }
 
 .container {
-    max-width: 860px;
+    max-width: 800px;
     margin: 0 auto;
-    padding: 40px 24px;
+    padding: 48px 32px;
 }
 
 /* Header */
@@ -56,28 +54,31 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 32px;
+    margin-bottom: 40px;
 }
 
 .header-left h1 {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
     color: var(--text-primary);
+    letter-spacing: -0.02em;
 }
 
 .header-left .subtitle {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text-tertiary);
-    margin-top: 2px;
+    margin-top: 4px;
+    font-weight: 400;
 }
 
 .theme-toggle {
-    padding: 6px 12px;
-    font-size: 12px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 500;
     font-family: inherit;
     background: var(--bg-primary);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 8px;
     color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.15s;
@@ -91,30 +92,32 @@ body {
 /* Stats */
 .stats {
     display: flex;
-    gap: 32px;
-    padding: 20px 24px;
+    gap: 40px;
+    padding: 24px 28px;
     background: var(--bg-primary);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: 24px;
+    border-radius: 12px;
+    margin-bottom: 28px;
 }
 
 .stat {
     display: flex;
     flex-direction: column;
+    gap: 2px;
 }
 
 .stat-value {
-    font-family: 'Source Code Pro', monospace;
-    font-size: 20px;
-    font-weight: 500;
+    font-size: 22px;
+    font-weight: 600;
     color: var(--text-primary);
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
 }
 
 .stat-label {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-tertiary);
-    margin-top: 2px;
+    font-weight: 400;
 }
 
 .stat.positive .stat-value {
@@ -130,12 +133,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 16px;
+    padding: 14px 18px;
     background: var(--bg-primary);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: 24px;
-    font-size: 13px;
+    border-radius: 12px;
+    margin-bottom: 28px;
+    font-size: 14px;
 }
 
 .status-left {
@@ -157,29 +160,29 @@ body {
 }
 
 .status-right {
-    font-family: 'Source Code Pro', monospace;
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
 }
 
 /* Sections */
 .section {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .section-header {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
     color: var(--text-tertiary);
-    margin-bottom: 8px;
-    padding-left: 2px;
+    margin-bottom: 10px;
+    padding-left: 4px;
 }
 
 /* Card */
 .card {
     background: var(--bg-primary);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
 }
 
@@ -190,23 +193,21 @@ table {
 }
 
 th {
-    padding: 12px 16px;
+    padding: 14px 18px;
     text-align: left;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--text-tertiary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
     background: var(--bg-tertiary);
     border-bottom: 1px solid var(--border);
 }
 
 td {
-    padding: 12px 16px;
-    font-family: 'Source Code Pro', monospace;
-    font-size: 13px;
+    padding: 14px 18px;
+    font-size: 14px;
     color: var(--text-secondary);
     border-bottom: 1px solid var(--border);
+    font-variant-numeric: tabular-nums;
 }
 
 tr:last-child td {
@@ -220,15 +221,13 @@ tr:hover td {
 td.empty {
     text-align: center;
     color: var(--text-tertiary);
-    padding: 32px;
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
+    padding: 36px;
+    font-size: 14px;
 }
 
 .cell-market {
-    font-family: 'Inter', sans-serif;
     color: var(--text-primary);
-    max-width: 240px;
+    max-width: 220px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -251,15 +250,15 @@ td.empty {
 .actions {
     display: flex;
     justify-content: flex-end;
-    margin-top: 16px;
+    margin-top: 20px;
 }
 
 .btn {
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
+    font-family: inherit;
+    font-size: 14px;
     font-weight: 500;
-    padding: 8px 16px;
-    border-radius: 6px;
+    padding: 10px 18px;
+    border-radius: 8px;
     border: 1px solid var(--border);
     background: var(--bg-primary);
     color: var(--text-secondary);
@@ -282,11 +281,11 @@ td.empty {
 
 /* Footer */
 footer {
-    margin-top: 32px;
-    padding-top: 16px;
+    margin-top: 40px;
+    padding-top: 20px;
     border-top: 1px solid var(--border);
     text-align: center;
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-tertiary);
 }
 
@@ -297,8 +296,8 @@ footer {
 
     .stats {
         flex-wrap: wrap;
-        gap: 20px;
-        padding: 16px;
+        gap: 24px;
+        padding: 20px;
     }
 
     .stat {
@@ -307,6 +306,6 @@ footer {
 
     .header {
         flex-direction: column;
-        gap: 12px;
+        gap: 16px;
     }
 }
