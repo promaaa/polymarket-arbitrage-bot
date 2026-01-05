@@ -21,6 +21,7 @@ class Config:
     MIN_PROFIT_THRESHOLD = float(os.getenv("MIN_PROFIT_THRESHOLD", "0.01"))
     MIN_VOLUME = float(os.getenv("MIN_VOLUME", "10000"))  # Minimum market volume
     MIN_LIQUIDITY = float(os.getenv("MIN_LIQUIDITY", "1000"))  # Minimum liquidity
+    MAX_DAYS_TO_RESOLUTION = int(os.getenv("MAX_DAYS_TO_RESOLUTION", "7"))  # Only markets resolving within N days
     INITIAL_BALANCE = float(os.getenv("INITIAL_BALANCE", "10000"))
     
     # Trade sizing - amount to invest per arbitrage opportunity

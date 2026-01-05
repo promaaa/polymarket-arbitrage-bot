@@ -1,22 +1,20 @@
-/* Polymarket Arbitrage Bot - Obsidian/Anthropic Inspired */
+/* Arbitrage Bot - Light theme with refined typography */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-    --bg: #1e1e1e;
-    --bg-secondary: #252525;
-    --bg-hover: #2a2a2a;
-    --bg-active: #333333;
-    --text: #dcddde;
-    --text-muted: #888888;
-    --text-faint: #666666;
-    --border: #333333;
-    --accent: #7c3aed;
-    --accent-muted: rgba(124, 58, 237, 0.15);
-    --green: #4ade80;
-    --green-muted: rgba(74, 222, 128, 0.15);
-    --red: #f87171;
-    --orange: #fb923c;
+    --bg: #fafafa;
+    --bg-card: #ffffff;
+    --bg-hover: #f5f5f5;
+    --text: #1a1a1a;
+    --text-secondary: #525252;
+    --text-muted: #a3a3a3;
+    --border: #e5e5e5;
+    --accent: #8b5cf6;
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --red: #dc2626;
+    --orange: #ea580c;
 }
 
 * {
@@ -32,61 +30,60 @@ body {
     line-height: 1.6;
     font-size: 13px;
     -webkit-font-smoothing: antialiased;
-    min-height: 100vh;
 }
 
 .container {
-    max-width: 900px;
+    max-width: 880px;
     margin: 0 auto;
-    padding: 40px 32px;
+    padding: 48px 24px;
 }
 
 /* Header */
 header {
-    margin-bottom: 40px;
+    margin-bottom: 32px;
 }
 
 header h1 {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--text);
     letter-spacing: -0.2px;
 }
 
 header .subtitle {
-    color: var(--text-faint);
+    color: var(--text-muted);
     font-size: 13px;
-    margin-top: 4px;
+    margin-top: 2px;
 }
 
-/* Stats Row */
+/* Stats */
 .stats-row {
     display: flex;
-    gap: 32px;
-    margin-bottom: 32px;
+    gap: 40px;
     padding: 20px 0;
+    margin-bottom: 24px;
     border-bottom: 1px solid var(--border);
 }
 
 .stat {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1px;
 }
 
 .stat-value {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 500;
     color: var(--text);
-    letter-spacing: -0.5px;
+    letter-spacing: -0.3px;
 }
 
 .stat-label {
     font-size: 11px;
-    color: var(--text-faint);
+    color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
 }
 
 .stat.positive .stat-value {
@@ -97,13 +94,14 @@ header .subtitle {
     color: var(--accent);
 }
 
-/* Status Bar */
+/* Status */
 .status-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 10px 14px;
-    background: var(--bg-secondary);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
     border-radius: 6px;
     margin-bottom: 28px;
     font-size: 12px;
@@ -113,23 +111,22 @@ header .subtitle {
     display: flex;
     align-items: center;
     gap: 8px;
-    color: var(--text-muted);
+    color: var(--text-secondary);
 }
 
 .status-dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--text-faint);
+    background: var(--text-muted);
 }
 
 .status-dot.active {
     background: var(--green);
-    box-shadow: 0 0 8px var(--green);
 }
 
 .status-right {
-    color: var(--text-faint);
+    color: var(--text-muted);
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
 }
@@ -142,17 +139,17 @@ header .subtitle {
 .section-title {
     font-size: 11px;
     font-weight: 500;
-    color: var(--text-faint);
+    color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.8px;
-    margin-bottom: 10px;
-    padding-left: 2px;
+    letter-spacing: 0.6px;
+    margin-bottom: 8px;
 }
 
-/* Table */
+/* Tables */
 .table-wrap {
-    background: var(--bg-secondary);
-    border-radius: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
     overflow: hidden;
 }
 
@@ -162,26 +159,27 @@ table {
 }
 
 th {
-    padding: 10px 14px;
+    padding: 9px 14px;
     text-align: left;
     font-size: 10px;
     font-weight: 500;
-    color: var(--text-faint);
+    color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    background: var(--bg-active);
+    letter-spacing: 0.4px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
 }
 
 td {
-    padding: 11px 14px;
+    padding: 10px 14px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
-    color: var(--text-muted);
-    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
 }
 
-tr:first-child td {
-    border-top: none;
+tr:last-child td {
+    border-bottom: none;
 }
 
 tr:hover td {
@@ -190,20 +188,18 @@ tr:hover td {
 
 td.empty {
     text-align: center;
-    color: var(--text-faint);
+    color: var(--text-muted);
     padding: 28px;
     font-family: 'Inter', sans-serif;
-    font-size: 12px;
 }
 
 .cell-market {
     color: var(--text);
-    max-width: 280px;
+    font-family: 'Inter', sans-serif;
+    max-width: 260px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-family: 'Inter', sans-serif;
-    font-weight: 400;
 }
 
 .cell-yes {
@@ -219,30 +215,29 @@ td.empty {
     font-weight: 500;
 }
 
-/* Footer Actions */
+/* Actions */
 .actions {
     display: flex;
     justify-content: flex-end;
-    margin-top: 24px;
+    margin-top: 20px;
 }
 
 .btn {
     font-family: 'Inter', sans-serif;
     font-size: 12px;
     font-weight: 500;
-    padding: 8px 14px;
-    border-radius: 6px;
+    padding: 7px 14px;
+    border-radius: 5px;
     border: 1px solid var(--border);
-    background: var(--bg-secondary);
-    color: var(--text-muted);
+    background: var(--bg-card);
+    color: var(--text-secondary);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.12s ease;
 }
 
 .btn:hover {
     background: var(--bg-hover);
-    color: var(--text);
-    border-color: var(--text-faint);
+    border-color: #ccc;
 }
 
 .btn.danger {
@@ -250,21 +245,20 @@ td.empty {
 }
 
 .btn.danger:hover {
-    background: rgba(248, 113, 113, 0.1);
+    background: #fef2f2;
     border-color: var(--red);
 }
 
 /* Footer */
 footer {
     margin-top: 40px;
-    padding-top: 20px;
+    padding-top: 16px;
     border-top: 1px solid var(--border);
     text-align: center;
     font-size: 11px;
-    color: var(--text-faint);
+    color: var(--text-muted);
 }
 
-/* Responsive */
 @media (max-width: 600px) {
     .container {
         padding: 24px 16px;
@@ -277,11 +271,5 @@ footer {
 
     .stat {
         min-width: 80px;
-    }
-
-    .status-bar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
     }
 }
