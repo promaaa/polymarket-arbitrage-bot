@@ -1,1 +1,1 @@
-/Users/user/Documents/code/polymarket-bot/rust-scanner/target/release/polymarket_scanner: /Users/user/Documents/code/polymarket-bot/rust-scanner/src/main.rs
+/Users/user/Documents/code/polymarket-bot/rust-scanner/target/release/polymarket_scanner: /Users/user/Documents/code/polymarket-bot/rust-scanner/src/execute.rs /Users/user/Documents/code/polymarket-bot/rust-scanner/src/main.rs

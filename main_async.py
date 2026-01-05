@@ -11,6 +11,8 @@ Optimizations:
 import argparse
 import asyncio
 import logging
+import json
+import os
 import signal
 from datetime import datetime
 from typing import Optional, Dict, List
@@ -218,10 +220,44 @@ class AsyncArbitrageBot:
         
         logger.info("Bot stopped")
     
+    async def monitor_external_scanner(self):
+        """Monitor externally generated opportunities.json (from Rust scanner)."""
+        logger.info("Monitoring opportunities.json from Rust scanner...")
+        self.running = True
+        
+        last_mtime = 0
+        file_path = "opportunities.json"
+        
+        while self.running:
+            try:
+                if os.path.exists(file_path):
+                    mtime = os.path.getmtime(file_path)
+                    if mtime > last_mtime:
+                        last_mtime = mtime
+                        try:
+                            with open(file_path, "r") as f:
+                                data = json.load(f)
+                            
+                            self.recent_opportunities = data.get("opportunities", [])
+                            # Sort by profit %
+                            self.recent_opportunities.sort(
+                                key=lambda x: x.get("profit_percentage", 0), 
+                                reverse=True
+                            )
+                            logger.info(f"Loaded {len(self.recent_opportunities)} opportunities from Rust scanner")
+                        except json.JSONDecodeError:
+                            pass # File might be partial write
+                
+            except Exception as e:
+                logger.error(f"External scanner monitor error: {e}")
+            
+            await asyncio.sleep(1)
+
     def get_status(self) -> dict:
         """Get current bot status."""
         stats = self.trader.get_stats()
-        scanner_stats = self.scanner.get_stats()
+        # Handle case where scanner is external
+        scanner_stats = self.scanner.get_stats() if hasattr(self.scanner, 'get_stats') else {}
         
         avg_scan_time = self.total_scan_time / max(1, self.scan_count)
         
@@ -254,6 +290,7 @@ async def main_async():
     parser.add_argument("--no-websocket", action="store_true", help="Disable WebSocket, use polling only")
     parser.add_argument("--once", action="store_true", help="Single scan and exit")
     parser.add_argument("--benchmark", "-b", action="store_true", help="Run benchmark mode")
+    parser.add_argument("--rust", action="store_true", help="Use external Rust scanner data")
     
     args = parser.parse_args()
     
@@ -328,7 +365,9 @@ async def main_async():
                 dashboard.run_in_thread()
                 print(f"📊 Dashboard: http://localhost:{Config.DASHBOARD_PORT}\n")
             
-            if bot.use_websocket:
+            if args.rust:
+                await bot.monitor_external_scanner()
+            elif bot.use_websocket:
                 await bot.run_hybrid()
             else:
                 await bot.run_scanner()

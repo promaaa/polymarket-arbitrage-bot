@@ -11,6 +11,11 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 futures-util = "0.3"
 chrono = { version = "0.4", features = ["serde"] }
+url = "2.2"
+ethers = { version = "2.0", features = ["rustls", "ws"] }
+dotenv = "0.15"
+hex = "0.4"
+rand = "0.8"
 
 [profile.release]
 opt-level = 3

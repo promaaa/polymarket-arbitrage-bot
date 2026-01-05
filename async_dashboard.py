@@ -81,13 +81,13 @@ class AsyncDashboard:
             return jsonify({
                 "opportunities": [
                     {
-                        "market_question": opp.market.question,
-                        "yes_price": opp.yes_price,
-                        "no_price": opp.no_price,
-                        "combined_cost": opp.combined_cost,
-                        "profit_per_share": opp.profit_per_share,
-                        "profit_percentage": opp.profit_percentage,
-                        "detected_at": opp.detected_at.isoformat(),
+                        "market_question": opp.market.question if hasattr(opp, "market") else opp.get("market_question", ""),
+                        "yes_price": opp.yes_price if hasattr(opp, "yes_price") else opp.get("yes_price", 0.0),
+                        "no_price": opp.no_price if hasattr(opp, "no_price") else opp.get("no_price", 0.0),
+                        "combined_cost": opp.combined_cost if hasattr(opp, "combined_cost") else opp.get("combined_cost", 0.0),
+                        "profit_per_share": opp.profit_per_share if hasattr(opp, "profit_per_share") else opp.get("profit_per_share", 0.0),
+                        "profit_percentage": opp.profit_percentage if hasattr(opp, "profit_percentage") else opp.get("profit_percentage", 0.0),
+                        "detected_at": opp.detected_at.isoformat() if hasattr(opp, "detected_at") and hasattr(opp.detected_at, "isoformat") else opp.get("detected_at", ""),
                     }
                     for opp in self.bot.recent_opportunities[-20:]
                 ],
