@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="static/images/logo.png" alt="OddsBridge Logo" width="200">
+  <img src="static/images/logo.png" alt="OddsBridge Logo" width="500">
   <h1>OddsBridge</h1>
   <h3>Polymarket Arbitrage Bot</h3>
 </div>
